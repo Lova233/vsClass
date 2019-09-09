@@ -103,6 +103,25 @@ export function activate(context: vscode.ExtensionContext) {
 		
 	let cssContent : any = ""
 	let regexClass : RegExp = /class=(?:\")(.*?)(?:\")/g;
+	let classes : any
+
+
+	//This is the current path of the file where you are activating the extesion
+	const currentFile = getFileName(getFileURI())
+
+ 	const currentStyleFile = currentFile.replace('html','css')
+
+	//This is the current path of the file where you are activating the extesion
+	function getFileURI(){
+		if(vscode.window.activeTextEditor){
+			return vscode.window.activeTextEditor.document.uri.toString()
+		}
+	}
+
+	//Use this to get the current file name
+	function getFileName(currentPath: any) {
+		return currentPath.substring(currentPath.lastIndexOf('/') + 1)
+	}
 
 	//This will get the selected string
 	const editor = vscode.window.activeTextEditor;
@@ -117,7 +136,6 @@ export function activate(context: vscode.ExtensionContext) {
 			editor.selection = newSelection;
 		}
 		let text = editor.document.getText(selection);
-		let classes = text.match(regexClass)
 		cssContent =  `.` + text + `{ }`;
 
 
@@ -130,15 +148,57 @@ export function activate(context: vscode.ExtensionContext) {
 			while (match = regex.exec(string)) {
 			  matches.push(match[index]);
 			}
+
 			return matches;
 		  }
-		  console.log(matches)
 
+		  classes = matches.join(" ").split(" ")
+		let buffer = ""
+		  classes = [...new Set(classes)]
 	}
+		
+		//This is not the right method to use, is too hight level and is difficult to use it for achieve 
+		//what we want here. Instead have a look on fs.write
+
+
+
+		let buffer = ""
+		for (let index = 0; index < classes.length; index++) {
+			 buffer += "." + classes[index] + "{}" + "\n"
+		}
+		console.log(buffer)
+
+
+
+
+
+		vscode.workspace.findFiles("**/" + currentStyleFile).then((res) =>
+			// fs.writeFile(path.join(res[0].path.replace(/\//g, "\\").substr(1)), cssContent, err => {
+			// 	if(err){
+			// 		console.error(err);
+			// 		return console.log("Something went wrong");
+			// 	}
+
+			// open the file in writing mode, adding a callback function where we do the actual writing
+			fs.open(path.join(res[0].path.replace(/\//g, "\\").substr(1)), 'w', function(err, fd) {
+				if (err) {
+					throw 'could not open file: ' + err;
+				}
+
+				// write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
+				fs.write(fd, buffer, null, function(err) {
+					if (err) throw 'error writing file: ' + err;
+					fs.close(fd, function() {
+						console.log('wrote the file successfully');
+					});
+				});
+			}));
+
+
 	vscode.window.showInformationMessage('SHOULD BE OK');
 	});
 
-	
+
 
 	context.subscriptions.push(allClass,singleClass);
 }
