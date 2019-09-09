@@ -158,39 +158,34 @@ export function activate(context: vscode.ExtensionContext) {
 
       //This is not the right method to use, is too hight level and is difficult to use it for achieve
       //what we want here. Instead have a look on fs.write
+	  if(classes.include("class")){
+		let buffer = "";
+		for (let index = 0; index < classes.length; index++) {
+		  buffer += "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
+		}
+		vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
+			fs.open(
+			  path.join(res[0].path.replace(/\//g, "\\").substr(1)),
+			  "w",
+			  function(err, fd) {
+				if (err) {
+				  throw  err;
+				}
+				
+				fs.appendFile(fd, buffer, null, function(err) {
+				  if (err) throw  err;
+				  fs.close(fd, function() {
+					console.log("wrote the file successfully");
+				  });
+				});
+			  }
+			)
+		  );
+		console.log(buffer);  
+	  }else{
+		vscode.window.showInformationMessage("missing classes in selection");
+	  }
 
-      let buffer = "";
-      for (let index = 0; index < classes.length; index++) {
-        buffer += "." + classes[index] + "{}" + "\n" + "\n";
-      }
-      console.log(buffer);
-
-      vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
-        // fs.writeFile(path.join(res[0].path.replace(/\//g, "\\").substr(1)), cssContent, err => {
-        // 	if(err){
-        // 		console.error(err);
-        // 		return console.log("Something went wrong");
-        // 	}
-
-        // open the file in writing mode, adding a callback function where we do the actual writing
-        fs.open(
-          path.join(res[0].path.replace(/\//g, "\\").substr(1)),
-          "w",
-          function(err, fd) {
-            if (err) {
-              throw  err;
-            }
-
-            // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
-            fs.write(fd, buffer, null, function(err) {
-              if (err) throw  err;
-              fs.close(fd, function() {
-                console.log("wrote the file successfully");
-              });
-            });
-          }
-        )
-      );
 
       vscode.window.showInformationMessage("SHOULD BE OK");
 	}
