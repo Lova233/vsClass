@@ -161,7 +161,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       let buffer = "";
       for (let index = 0; index < classes.length; index++) {
-        buffer += "." + classes[index] + "{}" + "\n";
+        buffer += "." + classes[index] + "{}" + "\n" + "\n";
       }
       console.log(buffer);
 
@@ -211,11 +211,11 @@ export function activate(context: vscode.ExtensionContext) {
 	a all the new empty css class
 */
   let newClass = vscode.commands.registerCommand (
-    "extension.createSingleClass",
+    "extension.createAllNewClass",
     () => {})
 
 
-  context.subscriptions.push(allClass, singleClass);
+  context.subscriptions.push(allClass, singleClass, newClass);
 }
 
 // this method is called when your extension is deactivated

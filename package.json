@@ -21,7 +21,11 @@
 			"title": "Create single class"
 		},
 		{	"command": "extension.createAllClass",
-			"title": "Create all class"}
+			"title": "Create all class"
+		},
+		{	"command": "extension.createAllNewClass",
+			"title": "Create all NEW class"
+		}
 	]
 	},
 	"scripts": {
