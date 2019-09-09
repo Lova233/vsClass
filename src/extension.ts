@@ -75,7 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 		//This is not the right method to use, is too hight level and is difficult to use it for achieve 
 		//what we want here. Instead have a look on fs.write
-		const cssfile = vscode.workspace.findFiles("**/" + currentStyleFile).then((res) =>
+		vscode.workspace.findFiles("**/" + currentStyleFile).then((res) =>
 			fs.writeFile(path.join(res[0].path.replace(/\//g, "\\").substr(1)), cssContent, err => {
 				if(err){
 					console.error(err);
@@ -89,21 +89,56 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('SHOULD BE OK');
 	});
 
-	let allClass = vscode.commands.registerCommand('extension.createAllClass', () => {
-			
-		// const editor = vscode.window.activeTextEditor;
-		// const selection = editor.selection;
-		// if(selection.isEmpty)
-		// {
-		// 	// the Position object gives you the line and character where the cursor is
-		// 	  const position = editor.selection.active;
-		// 	  const newPosition = position.with(position.line, 0);
-		// 	  const newSelection = new vscode.Selection(newPosition, newPosition);
-		// 	  editor.selection = newSelection;
-		// }
-		// const text = editor.document.getText(selection);
 
+
+
+
+
+	/* Create all class. Ideally this command would allowed
+	   users to automatically insert in the relative stylesheet 
+	   a all the new empty css class
+	*/
+	let allClass = vscode.commands.registerCommand('extension.createAllClass', () => {
+		
+		
+	let cssContent : any = ""
+	let regexClass : RegExp = /class=(?:\")(.*?)(?:\")/g;
+
+	//This will get the selected string
+	const editor = vscode.window.activeTextEditor;
+
+	if(editor){
+		let selection = editor.selection;
+		if(selection.isEmpty){
+			// the Position object gives you the line and character where the cursor is
+			let position = editor.selection.active;
+			let newPosition = position.with(position.line, 0);
+			let newSelection = new vscode.Selection(newPosition, newPosition);
+			editor.selection = newSelection;
+		}
+		let text = editor.document.getText(selection);
+		let classes = text.match(regexClass)
+		cssContent =  `.` + text + `{ }`;
+
+
+		var matches = getMatches(text, regexClass, 1);
+
+		function getMatches(string:any, regex:any, index:any) {
+			index || (index = 1); // default to the first capturing group
+			var matches = [];
+			var match;
+			while (match = regex.exec(string)) {
+			  matches.push(match[index]);
+			}
+			return matches;
+		  }
+		  console.log(matches)
+
+	}
+	vscode.window.showInformationMessage('SHOULD BE OK');
 	});
+
+	
 
 	context.subscriptions.push(allClass,singleClass);
 }
