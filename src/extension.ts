@@ -16,10 +16,13 @@ export function activate(context: vscode.ExtensionContext) {
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
 
-  /* Create single class. Ideally this command would allowed
-	   users to automatically insert in the relative stylesheet 
-	   a new empty css class
-	*/
+
+
+
+/* Create single class. Ideally this command would allowed
+	users to automatically insert in the relative stylesheet 
+	a new empty css class
+*/
   let singleClass = vscode.commands.registerCommand(
     "extension.createSingleClass",
     () => {
@@ -85,10 +88,17 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  /* Create all class. Ideally this command would allowed
-	   users to automatically insert in the relative stylesheet 
-	   a all the new empty css class
-	*/
+
+
+
+
+
+
+/* 
+	Create all class. Ideally this command would allowed
+	users to automatically insert in the relative stylesheet 
+	a all the new empty css class
+*/
   let allClass = vscode.commands.registerCommand(
     "extension.createAllClass",
     () => {
@@ -168,12 +178,12 @@ export function activate(context: vscode.ExtensionContext) {
           "w",
           function(err, fd) {
             if (err) {
-              throw "could not open file: " + err;
+              throw  err;
             }
 
             // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
             fs.write(fd, buffer, null, function(err) {
-              if (err) throw "error writing file: " + err;
+              if (err) throw  err;
               fs.close(fd, function() {
                 console.log("wrote the file successfully");
               });
@@ -183,8 +193,27 @@ export function activate(context: vscode.ExtensionContext) {
       );
 
       vscode.window.showInformationMessage("SHOULD BE OK");
-    }
+	}
+	
   );
+
+
+
+
+
+
+
+
+
+/* 
+	Create all NEW class (no already open rule set). Ideally this command would allowed
+	users to automatically insert in the relative stylesheet 
+	a all the new empty css class
+*/
+  let newClass = vscode.commands.registerCommand (
+    "extension.createSingleClass",
+    () => {})
+
 
   context.subscriptions.push(allClass, singleClass);
 }
