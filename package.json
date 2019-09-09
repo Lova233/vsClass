@@ -10,14 +10,19 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:extension.helloWorld"
+		"onCommand:extension.createSingleClass",
+		"onCommand:extension.createAllClass"
+
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [{
-			"command": "extension.helloWorld",
-			"title": "Hello World"
-		}]
+			"command": "extension.createSingleClass",
+			"title": "Create single class"
+		},
+		{	"command": "extension.createAllClass",
+			"title": "Create all class"}
+	]
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
