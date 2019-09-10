@@ -1,16 +1,22 @@
 # autoclass README
 
-This is the README for your extension "autoclass". After writing up a brief description, we recommend including the following sections.
+Auto class is a VS code extension that aim to siplify the transcription of style sheet starting from html pages.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+The project is still under Development, if you like to contribute plese contact me @ andrealovati.cube3@gmail.com
 
-For example if there is an image subfolder under your extension project workspace:
+Current Features
 
-\!\[feature X\]\(images/feature-x.png\)
+Create Single Class : Use this command to transcript the selected class to the relative stylesheet ( to be defined what is the "relative stylesheet"). Ideally would be great some sort of Hover activation. In this stage this works by selecting a class and run the command ```ctrt``` + ```shift``` + ```p``` and select "Create Single Class"
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+Create All Class : Use this command to transcript all the selected class to the relative stylesheet ( relative what? look above).
+Either for this command would be great some sort of Hover activation. In this stage this works by selecting the entire HTML page and run the command ```ctrt``` + ```shift``` + ```p```  and select "Create All Class"
+
+Create All NEW Class : Use this command to transcript all the selected NEW (this means that the extension will omit the opening of prexistent class in the stylesheet ) class to the relative stylesheet ( relative what? look above).
+Either for this command would be great some sort of Hover activation. In this stage this works by selecting the entire HTML page and run the command ```ctrt``` + ```shift``` + ```p```  and select "Create All NEW Class"
+
+
 
 ## Requirements
 
