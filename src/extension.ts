@@ -236,18 +236,7 @@ export function activate(context: vscode.ExtensionContext) {
         cssContent +=
           "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
 
-      //This is the current path of the file where you are activating the extesion
-      const currentFile = getFileName(getFileURI());
-
-      //This should be implemented with stronger logic to find also other possible extension  scss...
-      const currentStyleFile = currentFile.replace("html", "css");
-
-      //This is the current path of the file where you are activating the extesion
-      function getFileURI() {
-        if (vscode.window.activeTextEditor) {
-          return vscode.window.activeTextEditor.document.uri.toString();
-        }
-      }
+      
 
       //Use this to get the current file name
       function getFileName(currentPath: any) {
@@ -284,8 +273,6 @@ export function activate(context: vscode.ExtensionContext) {
           )
         );
       }
-
-
       //Use util to inspect complex obj
       // console.log(util.inspect(input.then(res=>console.log(res)), {showHidden: false, depth: null}))
     });
