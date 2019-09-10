@@ -56,16 +56,13 @@ export function activate(context: vscode.ExtensionContext) {
           )
         );
       }else{
-        console.log("qua")
          error = true
       }
-      console.log(error);
 
-
+      //If everything went well.... 
       if(!error){
         vscode.window.showInformationMessage("YOU SHOULD BE GOOD MA BOY");
       }else{
-        console.log("not here?")
         vscode.window.showErrorMessage("YOU ARE NOT SO GOOD MA BOY");        
       }
     }
