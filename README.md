@@ -26,6 +26,10 @@ Either for this command would be great some sort of Hover activation. In this st
 
 AutoClass is still in his early days. I will update this section soon!
 
+#### External Service 
+To reduce the complexity of the extension.ts I have created an External service with public function that are usable in the command method. 
+
+
 ## Extension Settings
 
 None yet
