@@ -19,10 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-/* Create single class. Ideally this command would allowed
-	users to automatically insert in the relative stylesheet 
-	a new empty css class
-*/
+  /* Create single class. Ideally this command would allowed
+    users to automatically insert in the relative stylesheet 
+    a new empty css class
+  */
   let singleClass = vscode.commands.registerCommand(
     "extension.createSingleClass",
     () => {
@@ -71,7 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
       //This is not the right method to use, is too hight level and is difficult to use it for achieve
       //what we want here. Instead have a look on fs.write
       vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
-        fs.writeFile(
+        fs.appendFile(
           path.join(res[0].path.replace(/\//g, "\\").substr(1)),
           cssContent,
           err => {
@@ -94,21 +94,24 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 
-/* 
-	Create all class. Ideally this command would allowed
-	users to automatically insert in the relative stylesheet 
-	a all the new empty css class
-*/
+  /* 
+    Create all class. Ideally this command would allowed
+    users to automatically insert in the relative stylesheet 
+    a all the new empty css class
+  */
   let allClass = vscode.commands.registerCommand(
     "extension.createAllClass",
     () => {
-      let cssContent: any = "";
+
+      
+      let cssClass: any = "";
       let regexClass: RegExp = /class=(?:\")(.*?)(?:\")/g;
       let classes: any;
 
       //This is the current path of the file where you are activating the extesion
       const currentFile = getFileName(getFileURI());
 
+      //This should be implemented with stronger logic to find also other possible extension  scss...
       const currentStyleFile = currentFile.replace("html", "css");
 
       //This is the current path of the file where you are activating the extesion
@@ -136,7 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
           editor.selection = newSelection;
         }
         let text = editor.document.getText(selection);
-        cssContent = `.` + text + `{ }`;
+        cssClass = `.` + text + `{ }`;
 
         var matches = getMatches(text, regexClass, 1);
 
@@ -150,68 +153,61 @@ export function activate(context: vscode.ExtensionContext) {
 
           return matches;
         }
-
-        classes = matches.join(" ").split(" ");
+        // need to find a way to check for multiple spaces this is working but is orrible >> "     "
+        classes = matches.join("       ").split(" ");
         let buffer = "";
         classes = [...new Set(classes)];
+        // and also lead to this shit 
+        classes = classes.filter(item => item != "");
       }
 
       //This is not the right method to use, is too hight level and is difficult to use it for achieve
       //what we want here. Instead have a look on fs.write
-	  if(classes.include("class")){
-		let buffer = "";
-		for (let index = 0; index < classes.length; index++) {
-		  buffer += "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
-		}
-		vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
-			fs.open(
-			  path.join(res[0].path.replace(/\//g, "\\").substr(1)),
-			  "w",
-			  function(err, fd) {
-				if (err) {
-				  throw  err;
-				}
-				
-				fs.appendFile(fd, buffer, null, function(err) {
-				  if (err) throw  err;
-				  fs.close(fd, function() {
-					console.log("wrote the file successfully");
-				  });
-				});
-			  }
-			)
-		  );
-		console.log(buffer);  
-	  }else{
-		vscode.window.showInformationMessage("missing classes in selection");
-	  }
+
+      let cssContent = "";
+      for (let index = 0; index < classes.length; index++) {
+        cssContent += "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
+
+        vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
+          fs.open(
+            path.join(res[0].path.replace(/\//g, "\\").substr(1)),
+            "w",
+            function (err, fd) {
+              if (err) {
+                throw err;
+              }
+              fs.appendFile(fd, cssContent, null, function (err) {
+                if (err) throw err;
+                fs.close(fd, function () {
+                  console.log("wrote the file successfully");
+                });
+              });
+            }
+          )
+        );
+      }
 
 
       vscode.window.showInformationMessage("SHOULD BE OK");
-	}
-	
-  );
+    }
+
+  )
 
 
-
-
-
-
-
-
-
-/* 
-	Create all NEW class (no already open rule set). Ideally this command would allowed
-	users to automatically insert in the relative stylesheet 
-	a all the new empty css class
-*/
-  let newClass = vscode.commands.registerCommand (
+  /* 
+    Create all NEW class (no already open rule set). Ideally this command would allowed
+    users to automatically insert in the relative stylesheet 
+    a all the new empty css class
+  */
+  let newClass = vscode.commands.registerCommand(
     "extension.createAllNewClass",
-    () => {})
+    () => {
+
+    })
 
 
   context.subscriptions.push(allClass, singleClass, newClass);
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
