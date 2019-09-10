@@ -1,6 +1,6 @@
 # AUTOCLASS extension for <3 VSCode
 
-Auto class is a VS code extension that aim to siplify the transcription of style sheet starting from html pages.
+Auto class is a VS code extension that aim to generate style rules from HTML docs.
 
 ## Features
 
