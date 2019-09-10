@@ -9,17 +9,17 @@ The project is still under Development, if you like to contribute plese contact 
 Current Features
 
 ### Create Single Class :
-Use this command to transcript the selected class to the relative stylesheet ( to be defined what is the "relative stylesheet"). Ideally would be great some sort of Hover activation. In this stage this works by selecting a class and run the command ```ctrt``` + ```shift``` + ```p``` and select "Create Single Class"
+Use this command to transcript the selected class to the relative stylesheet ( to be defined what is the "relative stylesheet"). Ideally would be great some sort of Hover activation. To run the command use ```ctrt``` + ```shift``` + ```p``` and select "Create Single Class"
 
 ### Create All Class :
 Use this command to transcript all the selected class to the relative stylesheet ( relative what? look above).
-Either for this command would be great some sort of Hover activation. In this stage this works by selecting the entire HTML page and run the command ```ctrt``` + ```shift``` + ```p```  and select "Create All Class"
+Either for this command would be great some sort of Hover activation.To run the command select the entire HTML page and run the command ```ctrt``` + ```shift``` + ```p```  and select "Create All Class"
 
 ### Create All NEW Class :
 Use this command to transcript all the selected NEW (this means that the extension will omit the opening of prexistent class in the stylesheet ) class to the relative stylesheet ( relative what? look above).
-Either for this command would be great some sort of Hover activation. In this stage this works by selecting the entire HTML page and run the command ```ctrt``` + ```shift``` + ```p```  and select "Create All NEW Class"
-
+Either for this command would be great some sort of Hover activation. To run the command select the entire HTML page and run the command ```ctrt``` + ```shift``` + ```p```  and select "Create All NEW Class". 
 (ATM I'am using this command to test user input so this is not working as expected!)
+
 
 
 ## Future Improvement 
