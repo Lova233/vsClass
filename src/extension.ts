@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
 import * as util from "util";
-import { stringify } from "querystring";
+import  { Service } from "./service"
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -27,63 +27,47 @@ export function activate(context: vscode.ExtensionContext) {
     () => {
       // The code you place here will be executed every time your command is executed
 
-      //This is the root path for the project folder
-      // let projectFolder =  vscode.workspace.workspaceFolders[0].uri.fsPath
-      let cssContent: any = "";
+      let error : boolean = false;
 
       //This is the current path of the file where you are activating the extesion
-      const currentFile = getFileName(getFileURI());
-
-      //This is the current path of the file where you are activating the extesion
-      function getFileURI() {
-        if (vscode.window.activeTextEditor) {
-          return vscode.window.activeTextEditor.document.uri.toString();
-        }
-      }
-
-      //Use this to get the current file name
-      function getFileName(currentPath: any) {
-        return currentPath.substring(currentPath.lastIndexOf("/") + 1);
-      }
-
+      const currentFile = Service.getFileName(Service.getFileURI());
+ 
       //This should be the style file that match the component one to add method to check scss etc
-      const currentStyleFile = currentFile.replace("html", "css");
+      const currentStyleFile = Service.findRelativeStyleSheet(currentFile)
 
-      //This will get the selected string
-      const editor = vscode.window.activeTextEditor;
+      //Grab the selection and convert it to style content may be splitted in 2 functions
+      const cssContent = Service.getSelectedElement()
 
-      if (editor) {
-        let selection = editor.selection;
-        if (selection.isEmpty) {
-          // the Position object gives you the line and character where the cursor is
-          let position = editor.selection.active;
-          let newPosition = position.with(position.line, 0);
-          let newSelection = new vscode.Selection(newPosition, newPosition);
-          editor.selection = newSelection;
-        }
-        let text = editor.document.getText(selection);
-        cssContent = `.` + text + `{ }`;
-      }
 
-      //The content to write
+      console.log(cssContent,"the content")
 
-      //This is not the right method to use, is too hight level and is difficult to use it for achieve
-      //what we want here. Instead have a look on fs.write
-      vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
-        fs.appendFile(
-          path.join(res[0].path.replace(/\//g, "\\").substr(1)),
-          cssContent,
-          err => {
-            if (err) {
-              console.error(err);
-              return console.log("Something went wrong");
+      if(cssContent != null){
+        vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
+          fs.appendFile(
+            path.join(res[0].path.replace(/\//g, "\\").substr(1)),
+            cssContent,
+            err => {
+              if (err) {
+                console.error(err);
+                error = true;
+              }
+              vscode.window.showInformationMessage("Content successfully written");
             }
-            vscode.window.showInformationMessage("Everything is good");
-          }
-        )
-      );
+          )
+        );
+      }else{
+        console.log("qua")
+         error = true
+      }
+      console.log(error);
 
-      vscode.window.showInformationMessage("SHOULD BE OK");
+
+      if(!error){
+        vscode.window.showInformationMessage("YOU SHOULD BE GOOD MA BOY");
+      }else{
+        console.log("not here?")
+        vscode.window.showErrorMessage("YOU ARE NOT SO GOOD MA BOY");        
+      }
     }
   );
 
