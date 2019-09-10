@@ -3,6 +3,8 @@
 import * as vscode from "vscode";
 import * as fs from "fs";
 import * as path from "path";
+import * as util from "util";
+import { stringify } from "querystring";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -15,9 +17,6 @@ export function activate(context: vscode.ExtensionContext) {
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
   // The commandId parameter must match the command field in package.json
-
-
-
 
   /* Create single class. Ideally this command would allowed
     users to automatically insert in the relative stylesheet 
@@ -88,12 +87,6 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-
-
-
-
-
-
   /* 
     Create all class. Ideally this command would allowed
     users to automatically insert in the relative stylesheet 
@@ -102,11 +95,9 @@ export function activate(context: vscode.ExtensionContext) {
   let allClass = vscode.commands.registerCommand(
     "extension.createAllClass",
     () => {
-
-      
       let cssClass: any = "";
-      let regexClass: RegExp = /class=(?:\")(.*?)(?:\")/g;
       let classes: any;
+      let regexClass: RegExp = /class=(?:\")(.*?)(?:\")/g;
 
       //This is the current path of the file where you are activating the extesion
       const currentFile = getFileName(getFileURI());
@@ -157,8 +148,8 @@ export function activate(context: vscode.ExtensionContext) {
         classes = matches.join("       ").split(" ");
         let buffer = "";
         classes = [...new Set(classes)];
-        // and also lead to this shit 
-        classes = classes.filter(item => item != "");
+        // and also lead to this shit
+        classes = classes.filter((item:any) => item != "");
       }
 
       //This is not the right method to use, is too hight level and is difficult to use it for achieve
@@ -166,7 +157,8 @@ export function activate(context: vscode.ExtensionContext) {
 
       let cssContent = "";
       for (let index = 0; index < classes.length; index++) {
-        cssContent += "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
+        cssContent +=
+          "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
 
         vscode.workspace.findFiles("**/" + currentStyleFile).then(res =>
           fs.open(
@@ -178,21 +170,15 @@ export function activate(context: vscode.ExtensionContext) {
               }
               fs.appendFile(fd, cssContent, null, function (err) {
                 if (err) throw err;
-                fs.close(fd, function () {
-                  console.log("wrote the file successfully");
-                });
               });
             }
           )
         );
       }
 
-
       vscode.window.showInformationMessage("SHOULD BE OK");
     }
-
-  )
-
+  );
 
   /* 
     Create all NEW class (no already open rule set). Ideally this command would allowed
@@ -203,8 +189,106 @@ export function activate(context: vscode.ExtensionContext) {
     "extension.createAllNewClass",
     () => {
 
-    })
+      let options = ""
+      let userInput: any;
+      let cssClass: any;
+      let classes: any;
+      let regexClass: RegExp = /class=(?:\")(.*?)(?:\")/g;
 
+      //This will get the selected string
+      const editor = vscode.window.activeTextEditor;
+
+      if (editor) {
+        let selection = editor.selection;
+        if (selection.isEmpty) {
+          // the Position object gives you the line and character where the cursor is
+          let position = editor.selection.active;
+          let newPosition = position.with(position.line, 0);
+          let newSelection = new vscode.Selection(newPosition, newPosition);
+          editor.selection = newSelection;
+        }
+        let text = editor.document.getText(selection);
+        cssClass = `.` + text + `{ }`;
+
+        var matches = getMatches(text, regexClass, 1);
+
+        function getMatches(string: any, regex: any, index: any) {
+          index || (index = 1); // default to the first capturing group
+          var matches = [];
+          var match;
+          while ((match = regex.exec(string))) {
+            matches.push(match[index]);
+          }
+
+          return matches;
+        }
+        // need to find a way to check for multiple spaces this is working but is orrible >> "     "
+        classes = matches.join("       ").split(" ");
+        let buffer = "";
+        classes = [...new Set(classes)];
+        // and also lead to this shit
+        classes = classes.filter((item:any) => item != "");
+      }
+
+
+      let cssContent = "";
+      for (let index = 0; index < classes.length; index++) {
+        cssContent +=
+          "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
+
+      //This is the current path of the file where you are activating the extesion
+      const currentFile = getFileName(getFileURI());
+
+      //This should be implemented with stronger logic to find also other possible extension  scss...
+      const currentStyleFile = currentFile.replace("html", "css");
+
+      //This is the current path of the file where you are activating the extesion
+      function getFileURI() {
+        if (vscode.window.activeTextEditor) {
+          return vscode.window.activeTextEditor.document.uri.toString();
+        }
+      }
+
+      //Use this to get the current file name
+      function getFileName(currentPath: any) {
+        return currentPath.substring(currentPath.lastIndexOf("/") + 1);
+      }
+
+      let inputOptions: vscode.InputBoxOptions = {
+        placeHolder: "Choose your stylesheet"
+      }
+
+
+
+      const inputBox = vscode.window.showInputBox(inputOptions)
+      .then(
+          res => userInput = res)
+      .then(function (userInput) {
+          return writeOnRightFile(userInput)}
+          )
+      }
+      
+
+      function writeOnRightFile(userInput:any){
+        vscode.workspace.findFiles("**/" + userInput).then(res =>
+          fs.appendFile(
+            path.join(res[0].path.replace(/\//g, "\\").substr(1)),
+            cssContent,
+            err => {
+              if (err) {
+                console.error(err);
+                return console.log("Something went wrong");
+              }
+              vscode.window.showInformationMessage("Everything is good");
+            }
+          )
+        );
+      }
+
+
+      //Use util to inspect complex obj
+      // console.log(util.inspect(input.then(res=>console.log(res)), {showHidden: false, depth: null}))
+    });
 
   context.subscriptions.push(allClass, singleClass, newClass);
 }

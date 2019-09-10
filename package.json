@@ -11,7 +11,9 @@
 	],
 	"activationEvents": [
 		"onCommand:extension.createSingleClass",
-		"onCommand:extension.createAllClass"
+		"onCommand:extension.createAllClass",
+		"onCommand:extension.createAllNewClass"
+
 
 	],
 	"main": "./out/extension.js",
