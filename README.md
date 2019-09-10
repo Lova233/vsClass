@@ -28,7 +28,7 @@ AutoClass is still in his early days. I will update this section soon!
 
 ## Extension Settings
 
-Nothing set up yet
+None yet
 
 ## Known Issues
 
