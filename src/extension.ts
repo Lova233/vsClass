@@ -194,18 +194,19 @@ export function activate(context: vscode.ExtensionContext) {
       
 
       function writeOnRightFile(userInput:any){
-        vscode.workspace.findFiles("**/" + userInput).then(res =>
-          fs.appendFile(
-            path.join(res[0].path.replace(/\//g, "\\").substr(1)),
-            cssContent,
-            err => {
-              if (err) {
-                console.error(err);
-                return console.log("Something went wrong");
-              }
-              vscode.window.showInformationMessage("Everything is good");
-            }
-          )
+        vscode.workspace.findFiles("**/").then(res =>
+          console.log(res)
+          // fs.appendFile(
+          //   path.join(res[0].path.replace(/\//g, "\\").substr(1)),
+          //   cssContent,
+          //   err => {
+          //     if (err) {
+          //       console.error(err);
+          //       return console.log("Something went wrong");
+          //     }
+          //     vscode.window.showInformationMessage("Everything is good");
+          //   }
+          // )
         );
       }
       //Use util to inspect complex obj
