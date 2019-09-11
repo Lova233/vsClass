@@ -34,7 +34,7 @@ export class Service {
 
 
   //Use this funtction to return selected elements
-  public static getSelectedElement(){
+  public static getSelectedElement() : any{
     const editor = vscode.window.activeTextEditor;
     let ccsContent : any
     if (editor) {
@@ -47,8 +47,36 @@ export class Service {
         editor.selection = newSelection;
         return vscode.window.showErrorMessage("Nothing selected"), ccsContent = null;
       }
-      let text = editor.document.getText(selection);
-      return  ccsContent = `.` + text + `{ }`;
+      return editor.document.getText(selection);
     }
   }
+
+  public static getCssContent(selection: string , isSingle: boolean, regex?: RegExp | any, index?: number){
+
+      let cssContent : string = ""
+
+      if(isSingle){
+          return  cssContent = `.` + selection + `{ }`;
+      }
+      index || (index = 1); // default to the first capturing group
+      var matches = [];
+      var match;
+      while ((match = regex.exec(selection))) {
+        matches.push(match[index]);
+      }
+      // need to find a way to check for multiple spaces this is working but is orrible >> "     "
+      let classes = matches.join("       ").split(" ");
+      classes = [...new Set(classes)];
+      // and also lead to this shit
+      classes = classes.filter((item:any) => item != "");
+
+      //create multiple classes rules based on the regexmatch
+      for (let index = 0; index < classes.length; index++) {
+        cssContent +=
+          "." + classes[index] + " {" + "\n" + "\n" + "}" + "\n" + "\n";
+      }
+
+      return cssContent;
+  }
+
 }
